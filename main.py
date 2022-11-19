@@ -38,16 +38,15 @@ def train_model(epochs=350, device='cuda'):
     batch_size = 128
     with open('results.csv', 'w') as f:
         df = pd.DataFrame()
-    for idx, model_fn in enumerate(model_fns):
-        model = model_fn()
-        model = model.to(device)
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
-        cifar_loader = get_cifar_loader(batch_size)
-        step_loss = _train_model(model, cifar_loader, optimizer, epochs)
-        if idx == 0:
-            df.insert(0, 'step', range(len(step_loss)))
-        step_loss_detach = [x.cpu().detach().numpy() for x in step_loss]
-        df.insert(idx+1, model_fn.__name__, step_loss_detach)
+    model_fn = model_fns[0]
+    model = model_fn()
+    model = model.to(device)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=5e-4)
+    cifar_loader = get_cifar_loader(batch_size)
+    step_loss = _train_model(model, cifar_loader, optimizer, epochs)
+    df.insert(0, 'step', range(len(step_loss)))
+    step_loss_detach = [x.cpu().detach().numpy() for x in step_loss]
+    df.insert(1, model_fn.__name__, step_loss_detach)
     df.to_csv('results.csv', index=False)
     return
         
