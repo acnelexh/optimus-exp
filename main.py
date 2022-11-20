@@ -92,7 +92,7 @@ def main():
         lr=0.01,
         momentum=0.9,
         weight_decay=5e-4,
-        epochs=1,
+        epochs=350,
         T_max=200)
 
 if __name__ == "__main__":
