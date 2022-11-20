@@ -48,18 +48,18 @@ def train_model(
         epochs=350,
         T_max=200,
         device='cuda',
-        output_file='output.csv'):
+        output_file='output.csv',
+        model_name='resnet20'):
     # main training function
     batch_size = 128
     df = pd.DataFrame()
-    model_fn = model_fns[1]
     model = model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     scheuler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=T_max)
     step_loss = _train_model(model, train_loader, optimizer, scheuler, epochs=epochs)
     df.insert(0, 'step', range(len(step_loss)))
     step_loss_detach = [x.cpu().detach().numpy() for x in step_loss]
-    df.insert(1, model_fn.__name__, step_loss_detach)
+    df.insert(1, model_name, step_loss_detach)
     df.to_csv(output_file, index=False)
     return
         
@@ -92,8 +92,9 @@ def main():
         lr=0.01,
         momentum=0.9,
         weight_decay=5e-4,
-        epochs=350,
-        T_max=200)
+        epochs=1,
+        T_max=200,
+        model_name='resnet20')
 
 if __name__ == "__main__":
     main()
