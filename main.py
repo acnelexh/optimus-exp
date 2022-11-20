@@ -5,6 +5,7 @@ from torchvision.models import resnet18
 from torchvision.datasets import CIFAR10
 from pytorch_resnet_cifar10.resnet import resnet20, resnet32, resnet44, resnet56
 from torch.optim.lr_scheduler import CosineAnnealingLR
+from torchvision.transforms import ToTensor, Compose, RandomCrop, RandomHorizontalFlip, Normalize
 
 
 model_fns = [resnet18, resnet20, resnet32, resnet44, resnet56]
@@ -64,11 +65,17 @@ def train_model(
         
 
 def get_cifar_loader(batch_size=128):
+    transform = Compose([
+        RandomCrop(32, padding=4),
+        RandomHorizontalFlip(),
+        ToTensor(),
+        Normalize((0.4914,0.4822,0.4465), (0.2023,0.1994,0.2010))
+    ])
     cifar_dataset = CIFAR10(
         './data',
         train=True,
         download=True,
-        transform=torchvision.transforms.ToTensor())
+        transform=transform)
     cifar_loader = torch.utils.data.DataLoader(
         cifar_dataset,
         batch_size=batch_size,
