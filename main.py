@@ -51,7 +51,6 @@ def train_model(
         output_file='output.csv',
         model_name='resnet20'):
     # main training function
-    batch_size = 128
     df = pd.DataFrame()
     model = model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
@@ -84,7 +83,7 @@ def get_cifar_loader(batch_size=128):
     return cifar_loader
 
 def main():
-    model = model_fns[1]()
+    model = model_fns[4]()
     trainLoader = get_cifar_loader(128)
     train_model(
         model,
